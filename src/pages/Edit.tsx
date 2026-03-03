@@ -112,7 +112,7 @@ function Edit() {
         age: Number(form.age),
       });
 
-      toast.success("Student updated successfully ✨");
+      toast.success("Student updated successfully ");
       navigate("/");
     } catch {
       toast.error("Update failed");

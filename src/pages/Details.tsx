@@ -4,8 +4,11 @@ import {
   Box,
   Paper,
   Divider,
+  Avatar,
+  Stack,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import SchoolIcon from "@mui/icons-material/School";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../api/axios";
@@ -34,31 +37,70 @@ function Details() {
   if (!student) return null;
 
   return (
-    <Box sx={{ minHeight: "100vh", background: "#f4f6f9", py: 8 }}>
-      <Container maxWidth="md">
+    <Box sx={{ minHeight: "100vh", background: "#f1f5f9" }}>
+      
+      {/* ===== College Header Banner ===== */}
+      <Box
+        sx={{
+          background: "linear-gradient(90deg, #0f172a, #1e3a8a)",
+          color: "#fff",
+          py: 5,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h4" fontWeight="bold">
+          ABC College of Engineering
+        </Typography>
+        <Typography variant="subtitle1">
+          Student Academic Portal
+        </Typography>
+      </Box>
+
+      {/* ===== Profile Section ===== */}
+      <Container maxWidth="md" sx={{ mt: -4 }}>
         <Paper
           sx={{
-            p: 5,
+            p: 4,
             borderRadius: 4,
-            boxShadow:
-              "0px 15px 40px rgba(0,0,0,0.08)",
+            boxShadow: "0px 15px 40px rgba(0,0,0,0.08)",
           }}
         >
+          <Stack alignItems="center" spacing={2}>
+            <Avatar
+              sx={{
+                width: 90,
+                height: 90,
+                bgcolor: "#1e3a8a",
+              }}
+            >
+              <SchoolIcon fontSize="large" />
+            </Avatar>
+
+            <Typography variant="h5" fontWeight="bold">
+              {student.name}
+            </Typography>
+
+            <Typography color="text.secondary">
+              {student.course} Department
+            </Typography>
+          </Stack>
+
+          <Divider sx={{ my: 4 }} />
+
+          {/* ===== Academic Details ===== */}
           <Typography
-            variant="h5"
+            variant="h6"
             fontWeight="bold"
             gutterBottom
-            color="primary"
+            sx={{ color: "#1e3a8a" }}
           >
-            Student Information
+            Academic Information
           </Typography>
 
-          <Divider sx={{ mb: 4 }} />
-
-          <Grid container spacing={4}>
+          <Grid container spacing={4} sx={{ mt: 1 }}>
             <Grid xs={12} sm={6}>
               <Typography fontWeight={600}>
-                Full Name
+                Student Name
               </Typography>
               <Typography color="text.secondary">
                 {student.name}
