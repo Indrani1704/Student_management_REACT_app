@@ -12,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import API from "../api/axios";
 import { toast } from "react-toastify";
+import type { Student } from "../types/interface/student.types";
 
 interface StudentForm {
   name: string;
@@ -33,7 +34,7 @@ const studentSchema = Yup.object({
 });
 
 function Edit() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [form, setForm] = useState<StudentForm>({
@@ -44,25 +45,29 @@ function Edit() {
   });
 
   const [errors, setErrors] = useState<
-    Partial<StudentForm>
+    Partial<Record<keyof StudentForm, string>>
   >({});
 
-  // Fetch student data
+  // Fetch student data safely with typing
   useEffect(() => {
-    if (id) {
-      API.get(`/students/${id}`)
-        .then((res) => {
-          setForm({
-            name: res.data.name,
-            email: res.data.email,
-            age: String(res.data.age),
-            course: res.data.course,
-          });
-        })
-        .catch(() =>
-          toast.error("Failed to load student")
-        );
-    }
+    if (!id) return;
+
+    const fetchStudent = async () => {
+      try {
+        const res = await API.get<Student>(`/students/${id}`);
+
+        setForm({
+          name: res.data.name,
+          email: res.data.email,
+          age: String(res.data.age),
+          course: res.data.course,
+        });
+      } catch {
+        toast.error("Failed to load student");
+      }
+    };
+
+    fetchStudent();
   }, [id]);
 
   const handleChange = (
@@ -96,6 +101,8 @@ function Edit() {
     e: React.FormEvent
   ) => {
     e.preventDefault();
+    if (!id) return;
+
     const isValid = await validate();
     if (!isValid) return;
 
@@ -104,7 +111,8 @@ function Edit() {
         ...form,
         age: Number(form.age),
       });
-      toast.success("Student updated successfully ");
+
+      toast.success("Student updated successfully ✨");
       navigate("/");
     } catch {
       toast.error("Update failed");
@@ -194,7 +202,7 @@ function Edit() {
                   fontWeight: 600,
                 }}
               >
-                Update 
+                Update
               </Button>
             </Stack>
           </form>
